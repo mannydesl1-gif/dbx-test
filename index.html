@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DBX — Quiz Sûreté du Fret Aérien / Air Cargo Security Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1B2A4A;
+    --blue: #2D6DB5;
+    --orange: #E06B2A;
+    --orange-light: #F5A25A;
+    --white: #FFFFFF;
+    --off-white: #F4F7FB;
+    --gray: #8899AA;
+    --gray-light: #DDE6F0;
+    --dark: #0D1A2E;
+    --green: #1A7A4A;
+    --green-light: #D5F0E3;
+    --red: #C0392B;
+    --red-light: #FADBD8;
+    --yellow: #F5C518;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--dark);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(45,109,181,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(224,107,42,0.10) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 20px 16px 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    padding: 32px 0 28px;
+  }
+
+  .logo-wrap {
+    background: var(--navy);
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 24px;
+    border-radius: 4px;
+    border-left: 5px solid var(--orange);
+    margin-bottom: 22px;
+  }
+
+  .logo-dbx {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 32px;
+    letter-spacing: 1px;
+  }
+  .logo-dbx span { color: var(--orange); }
+
+  .logo-divider { width: 1px; height: 36px; background: rgba(255,255,255,0.2); }
+
+  .logo-text {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--gray);
+    text-transform: uppercase;
+    line-height: 1.5;
+    text-align: left;
+  }
+
+  .header h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(22px, 5vw, 32px);
+    font-weight: 800;
+    letter-spacing: 1px;
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+  .header h1 em { color: var(--orange); font-style: normal; }
+
+  .header p {
+    font-size: 13px;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--orange);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .progress-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--gray);
+    text-transform: uppercase;
+  }
+
+  .progress-count {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--orange);
+  }
+
+  .progress-bar {
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), var(--orange));
+    border-radius: 3px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* ── NAME SCREEN ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  .card {
+    background: var(--navy);
+    border-radius: 8px;
+    padding: 32px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  .card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--orange);
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .card-subtitle {
+    font-size: 13px;
+    color: var(--gray);
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+
+  .form-group { margin-bottom: 18px; }
+
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .form-input {
+    width: 100%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    padding: 12px 14px;
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .form-input:focus { border-color: var(--orange); }
+  .form-input::placeholder { color: var(--gray); }
+
+  .lang-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .lang-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 4px;
+    border: 2px solid rgba(255,255,255,0.15);
+    background: transparent;
+    color: var(--gray);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .lang-btn.active {
+    border-color: var(--orange);
+    background: rgba(224,107,42,0.15);
+    color: var(--orange);
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 4px;
+    border: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+  }
+
+  .btn-primary {
+    background: var(--orange);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--orange-light); transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .btn-secondary {
+    background: var(--blue);
+    color: white;
+    margin-top: 10px;
+  }
+  .btn-secondary:hover { background: #3a7ec7; }
+
+  /* ── QUESTION CARD ── */
+  .q-type-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    margin-bottom: 14px;
+  }
+  .q-type-mcq { background: rgba(45,109,181,0.25); color: #7FB3E8; }
+  .q-type-tf  { background: rgba(224,107,42,0.25); color: var(--orange-light); }
+
+  .q-number {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .q-text {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 22px;
+    color: var(--white);
+  }
+
+  /* ── OPTIONS ── */
+  .options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    border-radius: 4px;
+    border: 2px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.03);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .option:hover:not(.answered) {
+    border-color: var(--blue);
+    background: rgba(45,109,181,0.12);
+  }
+
+  .option.selected:not(.answered) {
+    border-color: var(--orange);
+    background: rgba(224,107,42,0.12);
+  }
+
+  .option.correct {
+    border-color: var(--green);
+    background: rgba(26,122,74,0.18);
+  }
+
+  .option.wrong {
+    border-color: var(--red);
+    background: rgba(192,57,43,0.15);
+    opacity: 0.7;
+  }
+
+  .option-letter {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--gray);
+    transition: all 0.2s;
+  }
+
+  .option.selected:not(.answered) .option-letter { background: var(--orange); color: white; }
+  .option.correct .option-letter { background: var(--green); color: white; }
+  .option.wrong .option-letter { background: var(--red); color: white; }
+
+  /* TF options */
+  .tf-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .tf-option {
+    padding: 18px;
+    border-radius: 4px;
+    border: 2px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.03);
+    cursor: pointer;
+    text-align: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+    color: var(--white);
+  }
+
+  .tf-option:hover:not(.answered) { transform: translateY(-2px); }
+
+  .tf-option.true-opt:hover:not(.answered),
+  .tf-option.true-opt.selected:not(.answered) {
+    border-color: var(--green);
+    background: rgba(26,122,74,0.15);
+    color: #4cd48a;
+  }
+
+  .tf-option.false-opt:hover:not(.answered),
+  .tf-option.false-opt.selected:not(.answered) {
+    border-color: var(--red);
+    background: rgba(192,57,43,0.15);
+    color: #e87b70;
+  }
+
+  .tf-option.correct { border-color: var(--green); background: rgba(26,122,74,0.2); color: #4cd48a; }
+  .tf-option.wrong { border-color: var(--red); background: rgba(192,57,43,0.15); color: #e87b70; opacity: 0.6; }
+
+  /* ── FEEDBACK ── */
+  .feedback {
+    display: none;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .feedback.correct-fb {
+    background: rgba(26,122,74,0.15);
+    border-left: 4px solid var(--green);
+    color: #6ee8a8;
+    display: block;
+  }
+
+  .feedback.wrong-fb {
+    background: rgba(192,57,43,0.12);
+    border-left: 4px solid var(--red);
+    color: #f0a099;
+    display: block;
+  }
+
+  .feedback strong { display: block; margin-bottom: 4px; }
+
+  /* ── RESULTS SCREEN ── */
+  .score-ring-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 28px 0 24px;
+  }
+
+  .score-ring {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 6px solid;
+    position: relative;
+  }
+
+  .score-ring.pass { border-color: var(--green); box-shadow: 0 0 30px rgba(26,122,74,0.3); }
+  .score-ring.fail { border-color: var(--red); box-shadow: 0 0 30px rgba(192,57,43,0.3); }
+
+  .score-pct {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .score-ring.pass .score-pct { color: #4cd48a; }
+  .score-ring.fail .score-pct { color: #e87b70; }
+
+  .score-label {
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+
+  .result-verdict {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .verdict-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  .verdict-title.pass { color: #4cd48a; }
+  .verdict-title.fail { color: #e87b70; }
+
+  .verdict-sub { font-size: 14px; color: var(--gray); line-height: 1.5; }
+
+  .result-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .detail-box {
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  .detail-val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .detail-label { font-size: 11px; color: var(--gray); letter-spacing: 0.5px; }
+
+  .email-status {
+    background: rgba(45,109,181,0.15);
+    border: 1px solid rgba(45,109,181,0.3);
+    border-radius: 4px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: #7FB3E8;
+    text-align: center;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  /* ── CERT PREVIEW ── */
+  .cert-preview {
+    background: white;
+    color: #1B2A4A;
+    border-radius: 6px;
+    padding: 28px;
+    margin-bottom: 20px;
+    text-align: center;
+    border-top: 8px solid var(--orange);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cert-preview::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(27,42,74,0.015) 40px,
+      rgba(27,42,74,0.015) 41px
+    );
+  }
+
+  .cert-watermark {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 72px;
+    font-weight: 800;
+    color: rgba(27,42,74,0.04);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .cert-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    color: #1B2A4A;
+    margin-bottom: 4px;
+  }
+  .cert-logo span { color: #E06B2A; }
+
+  .cert-company {
+    font-size: 10px;
+    color: #8899AA;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .cert-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #8899AA;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .cert-certifies { font-size: 13px; color: #8899AA; margin-bottom: 8px; }
+
+  .cert-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 30px;
+    font-weight: 800;
+    color: #1B2A4A;
+    margin-bottom: 8px;
+    border-bottom: 2px solid #E06B2A;
+    display: inline-block;
+    padding: 0 20px 6px;
+  }
+
+  .cert-course {
+    font-size: 13px;
+    color: #3A4A5C;
+    margin: 10px 0;
+    line-height: 1.5;
+  }
+
+  .cert-score {
+    display: inline-block;
+    background: #E06B2A;
+    color: white;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    padding: 5px 18px;
+    border-radius: 3px;
+    margin: 8px 0 14px;
+  }
+
+  .cert-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #DDE6F0;
+    font-size: 10px;
+    color: #8899AA;
+  }
+
+  .cert-sig { text-align: center; }
+  .cert-sig-line { width: 100px; height: 1px; background: #1B2A4A; margin: 0 auto 4px; }
+
+  /* ── SPINNER ── */
+  .spinner {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    color: var(--gray);
+    font-size: 14px;
+  }
+
+  .spinner.active { display: block; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .spin-icon {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255,255,255,0.1);
+    border-top-color: var(--orange);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 8px;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card { animation: fadeUp 0.3s ease both; }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 24px 0;
+    font-size: 11px;
+    color: var(--gray);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    margin-top: 32px;
+    line-height: 1.8;
+  }
+
+  @media (max-width: 480px) {
+    .card { padding: 20px; }
+    .result-details { grid-template-columns: repeat(3,1fr); gap: 6px; }
+    .detail-val { font-size: 22px; }
+  }
+
+  /* ── CERT OVERLAY ── */
+  #certOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    z-index: 9999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: auto;
+    padding: 16px;
+  }
+
+  .cert-overlay-header {
+    width: 100%;
+    max-width: 700px;
+    background: var(--navy);
+    border: 2px solid var(--orange);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  .cert-overlay-inner {
+    width: 100%;
+    max-width: 700px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .cert-overlay-footer {
+    width: 100%;
+    max-width: 700px;
+    background: var(--navy);
+    border: 2px solid var(--orange);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-wrap">
+      <div class="logo-dbx">DB<span>X</span></div>
+      <div class="logo-divider"></div>
+      <div class="logo-text">Diamond Back Express<br>Air Cargo Security</div>
+    </div>
+    <div class="badge">Formation obligatoire / Required Training</div>
+    <h1>Quiz — Sûreté du Fret Aérien<br><em>Air Cargo Security Quiz</em></h1>
+    <p>Programme de Transports Canada · Transport Canada Program<br>
+    Représentant de Fret Autorisé · Authorized Cargo Representative<br>
+    <span style="font-size:11px;color:#4A90D9">Formation mise à jour 2026 · Updated Training 2026</span></p>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap" id="progressWrap" style="display:none">
+    <div class="progress-top">
+      <span class="progress-label" id="progressLabel">Question</span>
+      <span class="progress-count" id="progressCount">1 / 15</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <!-- SCREEN 0: NAME + LANG -->
+  <div class="screen active" id="screen-start">
+    <div class="card">
+      <div class="card-title">Avant de commencer / Before you start</div>
+      <div class="card-subtitle">
+        Entrez votre nom et choisissez votre langue.<br>
+        Enter your name and choose your language.
+      </div>
+
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('fr')" id="btn-fr">🇨🇦 Français</button>
+        <button class="lang-btn" onclick="setLang('en')" id="btn-en">🇺🇸 English</button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" id="lbl-name">Votre nom complet / Full name</label>
+        <input class="form-input" type="text" id="empName" placeholder="ex: Jean Tremblay" oninput="checkStart()">
+      </div>
+      <div class="form-group">
+        <label class="form-label" id="lbl-email">Votre adresse email / Your email address</label>
+        <input class="form-input" type="email" id="empEmail" placeholder="ex: jean@email.com" oninput="checkStart()">
+      </div>
+
+      <button class="btn btn-primary" id="startBtn" onclick="startQuiz()" disabled>
+        Commencer le quiz →
+      </button>
+    </div>
+  </div>
+
+  <!-- SCREEN 1: QUESTION -->
+  <div class="screen" id="screen-question">
+    <div class="card" id="questionCard">
+      <div id="qTypeBadge" class="q-type-badge q-type-mcq">Choix multiple / Multiple choice</div>
+      <div class="q-number" id="qNumber">Question 1 / 15</div>
+      <div class="q-text" id="qText"></div>
+      <div id="optionsContainer"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled style="display:none">
+        Question suivante / Next →
+      </button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: RESULTS -->
+  <div class="screen" id="screen-results">
+    <div class="card">
+      <div class="score-ring-wrap">
+        <div class="score-ring" id="scoreRing">
+          <div class="score-pct" id="scorePct">0%</div>
+          <div class="score-label">Score</div>
+        </div>
+      </div>
+      <div class="result-verdict">
+        <div class="verdict-title" id="verdictTitle">—</div>
+        <div class="verdict-sub" id="verdictSub"></div>
+      </div>
+      <div class="result-details">
+        <div class="detail-box">
+          <div class="detail-val" id="detCorrect" style="color:#4cd48a">—</div>
+          <div class="detail-label" id="lbl-correct">Bonnes réponses</div>
+        </div>
+        <div class="detail-box">
+          <div class="detail-val" id="detWrong" style="color:#e87b70">—</div>
+          <div class="detail-label" id="lbl-wrong">Mauvaises réponses</div>
+        </div>
+        <div class="detail-box">
+          <div class="detail-val" style="color:var(--orange)">80%</div>
+          <div class="detail-label" id="lbl-pass">Seuil requis</div>
+        </div>
+      </div>
+
+      <!-- Certificate preview -->
+      <div id="certWrap" style="display:none">
+        <div class="cert-preview" id="certPreview">
+          <div class="cert-watermark">DBX</div>
+          <div class="cert-logo">DB<span>X</span></div>
+          <div class="cert-company">Diamond Back Express Inc.</div>
+          <div class="cert-title">Certificat de réussite / Certificate of Completion</div>
+          <div class="cert-certifies">Ceci certifie que / This certifies that</div>
+          <div class="cert-name" id="certName">—</div>
+          <div class="cert-course" id="certCourse">
+            a complété avec succès la formation initiale en<br>
+            <strong>Sûreté du Fret Aérien — Représentant de Fret Autorisé</strong><br>
+            <em>Air Cargo Security — Authorized Cargo Representative</em><br>
+            Programme de Transports Canada · Transport Canada Program
+          </div>
+          <div class="cert-score" id="certScore">Score : 100% — RÉUSSI / PASSED</div>
+          <div class="cert-footer">
+            <div class="cert-sig">
+              <div class="cert-sig-line"></div>
+              <div>Manuel Deslauriers<br>ACR Coordinator — DBX</div>
+            </div>
+            <div style="text-align:center">
+              <div id="certDate" style="font-size:12px;font-weight:600;color:#1B2A4A"></div>
+              <div style="margin-top:4px">4515 Ebenezer Rd Unit 212<br>Brampton, Ontario L6P 2K7</div>
+            </div>
+            <div class="cert-sig">
+              <div class="cert-sig-line"></div>
+              <div>Transport Canada<br>Air Cargo Security</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="printBtnWrap" style="display:none">
+
+        <!-- STEP 1: Save certificate -->
+        <button class="btn btn-primary" onclick="printCert()" style="margin-bottom:12px;font-size:17px;padding:16px">
+          🖨️ <span id="printBtnText">Étape 1 — Sauvegarder / Télécharger mon certificat</span>
+        </button>
+
+        <!-- STEP 2: Instructions box -->
+        <div id="instrBox" style="background:linear-gradient(135deg,rgba(27,42,74,0.9),rgba(45,109,181,0.2));border:2px solid #E06B2A;border-radius:8px;padding:20px;margin-bottom:14px;text-align:left">
+
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:#E06B2A;margin-bottom:14px;letter-spacing:1px">
+            📋 ÉTAPE 2 — ENVOIE UNE COPIE À MANUEL / STEP 2 — SEND A COPY TO MANUEL
+          </div>
+
+          <div id="instrText" style="font-size:13px;line-height:2;color:#DDE6F0">
+            Après avoir sauvegardé ton certificat, envoie-le à Manuel par :<br>
+            <br>
+            📧 &nbsp;<strong style="color:white;font-size:14px">Email :</strong>
+            &nbsp;<a href="mailto:manny@diamondbackexpress.com?subject=Certificat Formation RFA" style="color:#4A90D9;font-weight:700;font-size:14px">manny@diamondbackexpress.com</a><br>
+            <br>
+            📱 &nbsp;<strong style="color:white;font-size:14px">WhatsApp :</strong>
+            &nbsp;<a href="https://wa.me/15145670214" target="_blank" style="color:#25D366;font-weight:700;font-size:14px">514-567-0214</a><br>
+            <br>
+            <div style="background:rgba(224,107,42,0.15);border-left:4px solid #E06B2A;padding:10px 12px;border-radius:4px;margin-top:6px;font-size:12px;color:#F5A25A">
+              ⚠️ &nbsp;Important : Sans cette copie, ta formation ne peut pas être officiellement enregistrée dans les dossiers DBX.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Screenshot reminder -->
+        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:#8899AA;text-align:left;line-height:1.8">
+          <strong style="color:#DDE6F0">📸 Rappel / Reminder :</strong><br>
+          FR : Prends aussi un <strong style="color:white">screenshot</strong> du certificat et conserve une copie dans tes dossiers personnels.<br>
+          EN : Also take a <strong style="color:white">screenshot</strong> of the certificate and keep a copy in your personal records.
+        </div>
+
+      </div>
+
+      <button class="btn btn-secondary" onclick="location.reload()" style="margin-top:4px">
+        🔄 Recommencer / Try again
+      </button>
+    </div>
+  </div>
+
+  <div class="footer">
+    Diamond Back Express Inc. · 4515 Ebenezer Rd Unit 212, Brampton, Ontario L6P 2K7<br>
+    514-567-0214 · Programme de sûreté du fret aérien / Air Cargo Security Program<br>
+    Confidentiel — Usage interne / Confidential — Internal use only
+  </div>
+
+<!-- CERTIFICATE OVERLAY - shown when employee clicks save certificate -->
+<div id="certOverlay">
+
+  <!-- Header instructions -->
+  <div class="cert-overlay-header">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:var(--orange);margin-bottom:8px">
+      📸 <span id="ovStep1Title">ÉTAPE 1 — Prends une capture d'écran / Télécharge</span>
+    </div>
+    <div style="font-size:13px;color:var(--gray-light);margin-bottom:12px" id="ovStep1Sub">
+      Sur iPhone : bouton Power + Volume Haut en même temps<br>
+      On iPhone: Power + Volume Up buttons at the same time
+    </div>
+    <button onclick="closeCertOverlay()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;padding:8px 20px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:1px">
+      ✕ Fermer / Close
+    </button>
+  </div>
+
+  <!-- Certificate -->
+  <div class="cert-overlay-inner" id="certOverlayContent">
+    <!-- filled by JS -->
+  </div>
+
+  <!-- Footer send instructions -->
+  <div class="cert-overlay-footer">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:var(--orange);margin-bottom:12px">
+      📤 <span id="ovStep2Title">ÉTAPE 2 — Envoie une copie à Manuel</span>
+    </div>
+    <div style="font-size:13px;line-height:2.2;color:var(--gray-light)">
+      📧 <strong style="color:white">Email :</strong>
+      <a href="mailto:manny@diamondbackexpress.com?subject=Certificat Formation RFA" style="color:#4A90D9;font-weight:700" id="ovEmailLink">manny@diamondbackexpress.com</a><br>
+      📱 <strong style="color:white">WhatsApp :</strong>
+      <a href="https://wa.me/15145670214" target="_blank" style="color:#25D366;font-weight:700">514-567-0214</a>
+    </div>
+    <div style="background:rgba(224,107,42,0.2);border-left:3px solid var(--orange);padding:10px 12px;border-radius:4px;margin-top:12px;font-size:12px;color:#F5A25A" id="ovWarning">
+      ⚠️ Sans cette copie, ta formation ne peut pas être officiellement enregistrée dans les dossiers DBX.
+    </div>
+  </div>
+
+</div>
+
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────
+const PASS_SCORE = 80;
+const TOTAL_Q = 15;
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+let lang = "fr";
+let empName = "";
+let empEmail = "";
+let currentQ = 0;
+let score = 0;
+let answers = [];
+let answered = false;
+
+// ── QUESTIONS ─────────────────────────────────────────────────────────────
+const questions = {
+  fr: [
+    // Q1 — MCQ — Cadre légal
+    {
+      type: "mcq",
+      q: "Quel organisme gouvernemental administre le Programme de Sûreté du Fret Aérien (PSFA) au Canada?",
+      opts: [
+        "L'Agence des services frontaliers du Canada (ASFC)",
+        "Transports Canada",
+        "Gendarmerie royale du Canada (GRC)",
+        "Emploi et Développement social Canada"
+      ],
+      ans: 1,
+      exp: "Le PSFA est administré par Transports Canada. Il encadre tous les intervenants qui manipulent du fret avant son chargement à bord d'un aéronef commercial."
+    },
+    // Q2 — MCQ — Déclaration
+    {
+      type: "mcq",
+      q: "Quelle information est OBLIGATOIRE dans la case 12 de la Déclaration du Fret Sécurisé?",
+      opts: [
+        "La signature de l'expéditeur",
+        "La date d'émission du document",
+        "Le nom complet de l'expéditeur (ACR)",
+        "Le numéro de vol de l'avion"
+      ],
+      ans: 2,
+      exp: "La case 12 doit obligatoirement contenir le NOM COMPLET de l'expéditeur. Aucune signature n'est requise, mais le nom est indispensable."
+    },
+    // Q3 — TF — Scellés
+    {
+      type: "tf",
+      q: "Un scellé haute sécurité peut être réutilisé plusieurs fois pour sécuriser différents chargements.",
+      ans: false,
+      exp: "FAUX — Les scellés haute sécurité sont à usage UNIQUE. Seuls les cadenas haute sécurité sont réutilisables."
+    },
+    // Q4 — MCQ — Inspection véhicule
+    {
+      type: "mcq",
+      q: "Lors de l'inspection pré-départ du véhicule, combien de zones doivent être vérifiées?",
+      opts: [
+        "2 zones : intérieur et extérieur",
+        "3 zones : avant, arrière et cabine",
+        "4 zones : extérieur avant, extérieur arrière, cabine et compartiment cargo",
+        "1 seule zone : le compartiment cargo uniquement"
+      ],
+      ans: 2,
+      exp: "L'inspection complète couvre 4 zones : extérieur avant, extérieur arrière, intérieur cabine et compartiment cargo."
+    },
+    // Q5 — MCQ — Véhicule sans surveillance
+    {
+      type: "mcq",
+      q: "Si vous devez absolument laisser votre véhicule sans surveillance avec du fret sécurisé à bord, que devez-vous faire en premier?",
+      opts: [
+        "Appeler le bureau DBX pour les informer",
+        "Appliquer le contrôle de sécurité ET activer l'alarme du véhicule",
+        "Stationner devant une caméra de surveillance",
+        "Retirer les déclarations DHL du véhicule"
+      ],
+      ans: 1,
+      exp: "L'alarme du véhicule est OBLIGATOIRE et le contrôle de sécurité (scellé/cadenas) doit être appliqué avant de quitter le véhicule."
+    },
+    // Q6 — MCQ — Personnes non autorisées
+    {
+      type: "mcq",
+      q: "Vous êtes dans la zone sécurisée au circuit et remarquez un individu sans badge visible qui s'approche des ULD. Quelle est la première chose à faire?",
+      opts: [
+        "L'ignorer et continuer le chargement — il fait probablement partie de l'équipe",
+        "Appeler le 911 immédiatement",
+        "L'approcher calmement et lui demander son badge et son autorisation d'accès",
+        "Quitter la zone immédiatement"
+      ],
+      ans: 2,
+      exp: "Approchez calmement et demandez : 'Puis-je voir votre badge et votre autorisation d'accès?' Si refus → demandez-lui de quitter et signalez immédiatement."
+    },
+    // Q7 — TF — Altération
+    {
+      type: "tf",
+      q: "Si vous détectez un seul signe d'altération sur la marchandise en transit, vous pouvez continuer vers l'aéroport et signaler à l'arrivée.",
+      ans: false,
+      exp: "FAUX — Un seul signe d'altération = ARRÊTER + NE PAS LIVRER + Photographier + Appeler Manuel Deslauriers (514-567-0214) immédiatement."
+    },
+    // Q8 — MCQ — Escorte Grand Prix
+    {
+      type: "mcq",
+      q: "Pourquoi l'escorte est-elle la SEULE mesure de sécurité durant le transit Circuit → Mirabel lors de l'opération Grand Prix?",
+      opts: [
+        "Parce que les ULD sont trop volumineux pour être scellés",
+        "Parce que les remorques step deck ne peuvent pas être sécurisées avec un scellé ou cadenas",
+        "Parce que Transport Canada l'exige pour tous les convois de nuit",
+        "Parce que DHL l'exige dans son contrat avec DBX"
+      ],
+      ans: 1,
+      exp: "Les remorques step deck sont ouvertes — impossible d'y apposer un scellé ou cadenas. L'escorte remplace ce contrôle physique."
+    },
+    // Q9 — MCQ — Communication
+    {
+      type: "mcq",
+      q: "Durant le transit, à quelle fréquence le chauffeur et l'escorte devraient-ils faire un appel téléphonique de vérification?",
+      opts: [
+        "Une seule fois — au départ",
+        "Toutes les heures",
+        "Toutes les 15 à 20 minutes",
+        "Seulement en cas de problème"
+      ],
+      ans: 2,
+      exp: "Des check-ins téléphoniques toutes les 15-20 minutes permettent de détecter rapidement tout problème et de maintenir la coordination."
+    },
+    // Q10 — TF — Arrêt police
+    {
+      type: "tf",
+      q: "Si votre véhicule est arrêté par les forces de l'ordre durant le transit, cela brise automatiquement la chaîne sécurisée.",
+      ans: false,
+      exp: "FAUX — Un arrêt par les forces de l'ordre est un arrêt AUTORISÉ. Documenter, informer l'escorte et appeler Manuel suffit dans la plupart des cas."
+    },
+    // Q11 — MCQ — Fret consolidé
+    {
+      type: "mcq",
+      q: "Dans un envoi de fret consolidé, vous trouvez un article dont l'expéditeur ne peut pas être identifié. Que faites-vous?",
+      opts: [
+        "Accepter le reste de l'envoi et laisser l'article non identifié de côté",
+        "Refuser TOUT l'envoi consolidé",
+        "Accepter si les autres articles sont conformes",
+        "Appeler DHL pour décision"
+      ],
+      ans: 1,
+      exp: "Dans un fret consolidé, un seul article suspect = refus TOTAL de l'ensemble de la consolidation. On ne peut pas séparer les articles."
+    },
+    // Q12 — MCQ — Registres
+    {
+      type: "mcq",
+      q: "Combien de temps les registres de scellés, cadenas et incidents doivent-ils être conservés selon Transports Canada?",
+      opts: [
+        "30 jours",
+        "60 jours",
+        "90 jours",
+        "6 mois"
+      ],
+      ans: 2,
+      exp: "Tous les registres (scellés, cadenas, incidents, formation) doivent être conservés 90 jours minimum. TC peut les demander sans préavis."
+    },
+    // Q13 — MCQ — Refus chargement
+    {
+      type: "mcq",
+      q: "Un expéditeur vous présente une déclaration avec la case 12 vide. Il vous dit qu'il signera à l'arrivée. Que faites-vous?",
+      opts: [
+        "Accepter — il signera à l'aéroport",
+        "Accepter si les autres cases sont remplies",
+        "Refuser le chargement et appeler Manuel 514-567-0214",
+        "Remplir vous-même la case 12 avec son nom"
+      ],
+      ans: 2,
+      exp: "REFUSER. La case 12 doit être remplie AVANT le chargement par l'expéditeur lui-même. Appeler le bureau immédiatement et documenter."
+    },
+    // Q14 — MCQ — Chaîne sûreté
+    {
+      type: "mcq",
+      q: "Quel rôle joue Diamond Back Express dans la chaîne de sûreté du fret aérien?",
+      opts: [
+        "Transporteur aérien — amène le fret à l'avion",
+        "Chargeur connu — emballe et sécurise le fret",
+        "Agent certifié — reçoit, inspecte, charge et transporte le fret sécurisé",
+        "Agent habilité — contrôle le fret pour le sécuriser"
+      ],
+      ans: 2,
+      exp: "DBX est un agent certifié (transporteur terrestre) — nous recevons le fret sécurisé, l'inspectons, le chargeons et le transportons jusqu'à l'aéroport."
+    },
+    // Q15 — TF — Formation rappel
+    {
+      type: "tf",
+      q: "La formation de rappel pour les RFA doit être complétée deux fois par année selon les exigences de Transports Canada.",
+      ans: true,
+      exp: "VRAI — La formation de rappel est requise DEUX FOIS par année civile selon le PSFA de Transports Canada pour maintenir la désignation RFA active."
+    }
+  ],
+  en: [
+    // Q1 — MCQ — Legal framework
+    {
+      type: "mcq",
+      q: "Which government body administers the Air Cargo Security Program (ACSP) in Canada?",
+      opts: [
+        "Canada Border Services Agency (CBSA)",
+        "Transport Canada",
+        "Royal Canadian Mounted Police (RCMP)",
+        "Employment and Social Development Canada"
+      ],
+      ans: 1,
+      exp: "The ACSP is administered by Transport Canada. It governs all parties who handle cargo before it is loaded onto a commercial aircraft."
+    },
+    // Q2 — MCQ — Declaration
+    {
+      type: "mcq",
+      q: "What information is MANDATORY in box 12 of the Secure Cargo Declaration?",
+      opts: [
+        "The shipper's signature",
+        "The date of issuance",
+        "The shipper's full name (ACR)",
+        "The flight number of the aircraft"
+      ],
+      ans: 2,
+      exp: "Box 12 must contain the shipper's FULL NAME. No signature is required, but the name is mandatory."
+    },
+    // Q3 — TF — Seals
+    {
+      type: "tf",
+      q: "A high-security seal can be reused multiple times to secure different shipments.",
+      ans: false,
+      exp: "FALSE — High-security seals are SINGLE-USE. Only high-security locks are reusable."
+    },
+    // Q4 — MCQ — Vehicle inspection
+    {
+      type: "mcq",
+      q: "During a pre-departure vehicle inspection, how many zones must be checked?",
+      opts: [
+        "2 zones: interior and exterior",
+        "3 zones: front, rear and cabin",
+        "4 zones: front exterior, rear exterior, cabin and cargo compartment",
+        "1 zone: the cargo compartment only"
+      ],
+      ans: 2,
+      exp: "A complete inspection covers 4 zones: front exterior, rear exterior, interior cabin and cargo compartment."
+    },
+    // Q5 — MCQ — Unattended vehicle
+    {
+      type: "mcq",
+      q: "If you must leave your vehicle unattended with secure cargo on board, what is the first thing you must do?",
+      opts: [
+        "Call the DBX office to notify them",
+        "Apply security control AND activate the vehicle alarm",
+        "Park in front of a security camera",
+        "Remove the DHL declarations from the vehicle"
+      ],
+      ans: 1,
+      exp: "The vehicle alarm is MANDATORY and the security control (seal/lock) must be applied before leaving the vehicle."
+    },
+    // Q6 — MCQ — Unauthorized persons
+    {
+      type: "mcq",
+      q: "You are in the secure zone at the circuit and notice an individual without a visible badge approaching the ULDs. What is the first thing to do?",
+      opts: [
+        "Ignore them and continue loading — they probably belong to the team",
+        "Call 911 immediately",
+        "Approach calmly and ask to see their badge and access authorization",
+        "Leave the zone immediately"
+      ],
+      ans: 2,
+      exp: "Approach calmly and ask: 'May I see your badge and access authorization?' If refused → ask them to leave and report immediately."
+    },
+    // Q7 — TF — Tampering
+    {
+      type: "tf",
+      q: "If you detect a single sign of tampering on cargo in transit, you can continue to the airport and report upon arrival.",
+      ans: false,
+      exp: "FALSE — Any single sign of tampering = STOP + DO NOT DELIVER + Photograph + Call Manuel Deslauriers (514-567-0214) immediately."
+    },
+    // Q8 — MCQ — Grand Prix escort
+    {
+      type: "mcq",
+      q: "Why is the escort the ONLY security measure during the Circuit → Mirabel transit in the Grand Prix operation?",
+      opts: [
+        "Because the ULDs are too large to be sealed",
+        "Because step deck trailers cannot be secured with a seal or lock",
+        "Because Transport Canada requires it for all night convoys",
+        "Because DHL requires it in their contract with DBX"
+      ],
+      ans: 1,
+      exp: "Step deck trailers are open — it is impossible to apply a seal or lock. The escort replaces this physical security control."
+    },
+    // Q9 — MCQ — Communication
+    {
+      type: "mcq",
+      q: "During transit, how often should the driver and escort make a check-in phone call?",
+      opts: [
+        "Once only — at departure",
+        "Every hour",
+        "Every 15 to 20 minutes",
+        "Only when there is a problem"
+      ],
+      ans: 2,
+      exp: "Phone check-ins every 15-20 minutes allow quick detection of any problem and maintain coordination throughout the trip."
+    },
+    // Q10 — TF — Police stop
+    {
+      type: "tf",
+      q: "If your vehicle is stopped by law enforcement during transit, the secure chain is automatically broken.",
+      ans: false,
+      exp: "FALSE — A law enforcement stop is an AUTHORIZED stop. Documenting, notifying the escort and calling Manuel is sufficient in most cases."
+    },
+    // Q11 — MCQ — Consolidated freight
+    {
+      type: "mcq",
+      q: "In a consolidated shipment, you find one item whose shipper cannot be identified. What do you do?",
+      opts: [
+        "Accept the rest of the shipment and set the unidentified item aside",
+        "Refuse the ENTIRE consolidated shipment",
+        "Accept if all other items are compliant",
+        "Call DHL for a decision"
+      ],
+      ans: 1,
+      exp: "In consolidated freight, one suspicious item = TOTAL refusal of the entire consolidation. Items cannot be separated."
+    },
+    // Q12 — MCQ — Records
+    {
+      type: "mcq",
+      q: "How long must seal, lock and incident records be kept according to Transport Canada?",
+      opts: [
+        "30 days",
+        "60 days",
+        "90 days",
+        "6 months"
+      ],
+      ans: 2,
+      exp: "All records (seals, locks, incidents, training) must be kept for a minimum of 90 days. TC can request them without notice."
+    },
+    // Q13 — MCQ — Refusal
+    {
+      type: "mcq",
+      q: "A shipper presents a declaration with box 12 blank. They say they will sign at the airport. What do you do?",
+      opts: [
+        "Accept — they will sign at the airport",
+        "Accept if all other boxes are filled",
+        "Refuse the loading and call Manuel 514-567-0214",
+        "Fill in box 12 yourself with their name"
+      ],
+      ans: 2,
+      exp: "REFUSE. Box 12 must be filled BEFORE loading by the shipper themselves. Call the office immediately and document."
+    },
+    // Q14 — MCQ — Secure chain
+    {
+      type: "mcq",
+      q: "What role does Diamond Back Express play in the air cargo secure chain?",
+      opts: [
+        "Air carrier — brings cargo to the aircraft",
+        "Known consignor — packs and secures cargo",
+        "Certified agent — receives, inspects, loads and transports secure cargo",
+        "Regulated agent — screens cargo to secure it"
+      ],
+      ans: 2,
+      exp: "DBX is a certified agent (ground carrier) — we receive secure cargo, inspect it, load it and transport it to the airport."
+    },
+    // Q15 — TF — Recurrent training
+    {
+      type: "tf",
+      q: "Recurrent training for ACRs must be completed twice per year according to Transport Canada requirements.",
+      ans: true,
+      exp: "TRUE — Recurrent training is required TWICE per calendar year under Transport Canada's ACSP to maintain active ACR designation."
+    }
+  ]
+};
+
+// ── LANG ──────────────────────────────────────────────────────────────────
+function setLang(l) {
+  lang = l;
+  document.getElementById('btn-fr').classList.toggle('active', l === 'fr');
+  document.getElementById('btn-en').classList.toggle('active', l === 'en');
+  document.getElementById('startBtn').textContent = l === 'fr'
+    ? 'Commencer le quiz →' : 'Start quiz →';
+  document.getElementById('lbl-name').textContent = l === 'fr'
+    ? 'Votre nom complet / Full name' : 'Your full name';
+  document.getElementById('lbl-email').textContent = l === 'fr'
+    ? 'Votre adresse email / Your email address' : 'Your email address';
+}
+
+function checkStart() {
+  const name = document.getElementById('empName').value.trim();
+  const email = document.getElementById('empEmail').value.trim();
+  const valid = name.length > 2 && email.includes('@') && email.includes('.');
+  document.getElementById('startBtn').disabled = !valid;
+}
+
+// ── START ─────────────────────────────────────────────────────────────────
+function startQuiz() {
+  empName = document.getElementById('empName').value.trim();
+  empEmail = document.getElementById('empEmail').value.trim();
+  currentQ = 0; score = 0; answers = [];
+  showScreen('question');
+  document.getElementById('progressWrap').style.display = 'block';
+  renderQuestion();
+}
+
+// ── RENDER QUESTION ───────────────────────────────────────────────────────
+function renderQuestion() {
+  answered = false;
+  const qs = questions[lang];
+  const q = qs[currentQ];
+  const total = qs.length;
+
+  document.getElementById('qNumber').textContent =
+    (lang === 'fr' ? 'Question ' : 'Question ') + (currentQ+1) + ' / ' + total;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('progressCount').textContent = (currentQ+1) + ' / ' + total;
+  document.getElementById('progressFill').style.width = ((currentQ+1)/total*100) + '%';
+  document.getElementById('progressLabel').textContent =
+    lang === 'fr' ? 'Progression' : 'Progress';
+
+  const typeBadge = document.getElementById('qTypeBadge');
+  if (q.type === 'tf') {
+    typeBadge.className = 'q-type-badge q-type-tf';
+    typeBadge.textContent = lang === 'fr' ? 'Vrai ou Faux' : 'True or False';
+  } else {
+    typeBadge.className = 'q-type-badge q-type-mcq';
+    typeBadge.textContent = lang === 'fr' ? 'Choix multiple' : 'Multiple choice';
+  }
+
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('feedback').innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+  document.getElementById('nextBtn').disabled = true;
+
+  const cont = document.getElementById('optionsContainer');
+  cont.innerHTML = '';
+
+  if (q.type === 'tf') {
+    const wrap = document.createElement('div');
+    wrap.className = 'tf-options';
+
+    const trueBtn = document.createElement('button');
+    trueBtn.className = 'tf-option true-opt';
+    trueBtn.innerHTML = '✓ ' + (lang === 'fr' ? 'VRAI' : 'TRUE');
+    trueBtn.onclick = () => selectTF(true, q);
+
+    const falseBtn = document.createElement('button');
+    falseBtn.className = 'tf-option false-opt';
+    falseBtn.innerHTML = '✗ ' + (lang === 'fr' ? 'FAUX' : 'FALSE');
+    falseBtn.onclick = () => selectTF(false, q);
+
+    wrap.appendChild(trueBtn);
+    wrap.appendChild(falseBtn);
+    cont.appendChild(wrap);
+  } else {
+    const wrap = document.createElement('div');
+    wrap.className = 'options';
+    const letters = ['A','B','C','D'];
+    q.opts.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option';
+      btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
+      btn.onclick = () => selectMCQ(i, q, btn, wrap);
+      wrap.appendChild(btn);
+    });
+    cont.appendChild(wrap);
+  }
+
+  // Animate
+  document.getElementById('questionCard').style.animation = 'none';
+  requestAnimationFrame(() => {
+    document.getElementById('questionCard').style.animation = 'fadeUp 0.3s ease both';
+  });
+}
+
+// ── SELECT MCQ ────────────────────────────────────────────────────────────
+function selectMCQ(idx, q, btn, wrap) {
+  if (answered) return;
+  answered = true;
+  const correct = idx === q.ans;
+  if (correct) score++;
+  answers.push({ q: q.q, selected: idx, correct });
+
+  const opts = wrap.querySelectorAll('.option');
+  opts.forEach((o, i) => {
+    o.classList.add('answered');
+    if (i === q.ans) o.classList.add('correct');
+    else if (i === idx && !correct) o.classList.add('wrong');
+  });
+
+  showFeedback(correct, q.exp);
+}
+
+// ── SELECT TF ─────────────────────────────────────────────────────────────
+function selectTF(val, q) {
+  if (answered) return;
+  answered = true;
+  const correct = val === q.ans;
+  if (correct) score++;
+  answers.push({ q: q.q, selected: val, correct });
+
+  const btns = document.querySelectorAll('.tf-option');
+  btns.forEach(b => {
+    b.classList.add('answered');
+    const isTrue = b.classList.contains('true-opt');
+    if ((isTrue && q.ans) || (!isTrue && !q.ans)) b.classList.add('correct');
+    else if ((isTrue && val) || (!isTrue && !val)) b.classList.add('wrong');
+  });
+
+  showFeedback(correct, q.exp);
+}
+
+// ── FEEDBACK ──────────────────────────────────────────────────────────────
+function showFeedback(correct, exp) {
+  const fb = document.getElementById('feedback');
+  const nextBtn = document.getElementById('nextBtn');
+  const qs = questions[lang];
+  const isLast = currentQ === qs.length - 1;
+
+  if (correct) {
+    fb.className = 'feedback correct-fb';
+    fb.innerHTML = `<strong>✓ ${lang==='fr'?'Bonne réponse!':'Correct!'}</strong>${exp}`;
+  } else {
+    fb.className = 'feedback wrong-fb';
+    fb.innerHTML = `<strong>✗ ${lang==='fr'?'Mauvaise réponse.':'Wrong answer.'}</strong>${exp}`;
+  }
+
+  nextBtn.style.display = 'block';
+  nextBtn.disabled = false;
+  nextBtn.textContent = isLast
+    ? (lang==='fr' ? 'Voir mes résultats →' : 'See my results →')
+    : (lang==='fr' ? 'Question suivante →' : 'Next question →');
+}
+
+// ── NEXT ──────────────────────────────────────────────────────────────────
+function nextQuestion() {
+  const qs = questions[lang];
+  currentQ++;
+  if (currentQ >= qs.length) {
+    showResults();
+  } else {
+    renderQuestion();
+  }
+}
+
+// ── RESULTS ───────────────────────────────────────────────────────────────
+function showResults() {
+  showScreen('results');
+  document.getElementById('progressWrap').style.display = 'none';
+
+  const qs = questions[lang];
+  const total = qs.length;
+  const pct = Math.round(score / total * 100);
+  const pass = pct >= PASS_SCORE;
+
+  document.getElementById('scorePct').textContent = pct + '%';
+  document.getElementById('scoreRing').className = 'score-ring ' + (pass ? 'pass' : 'fail');
+
+  document.getElementById('verdictTitle').textContent = pass
+    ? (lang==='fr' ? '🎉 RÉUSSI!' : '🎉 PASSED!')
+    : (lang==='fr' ? '❌ ÉCHOUÉ' : '❌ FAILED');
+  document.getElementById('verdictTitle').className = 'verdict-title ' + (pass ? 'pass' : 'fail');
+
+  document.getElementById('verdictSub').textContent = pass
+    ? (lang==='fr'
+        ? `Félicitations ${empName}! Vous avez réussi la formation avec ${pct}%.`
+        : `Congratulations ${empName}! You passed the training with ${pct}%.`)
+    : (lang==='fr'
+        ? `Score insuffisant. Le seuil de réussite est de ${PASS_SCORE}%. Veuillez reprendre la formation.`
+        : `Insufficient score. The passing threshold is ${PASS_SCORE}%. Please review the training.`);
+
+  document.getElementById('detCorrect').textContent = score;
+  document.getElementById('detWrong').textContent = total - score;
+  document.getElementById('lbl-correct').textContent = lang==='fr' ? 'Bonnes réponses' : 'Correct';
+  document.getElementById('lbl-wrong').textContent = lang==='fr' ? 'Mauvaises réponses' : 'Wrong';
+  document.getElementById('lbl-pass').textContent = lang==='fr' ? 'Seuil requis' : 'Pass threshold';
+
+  // Certificate
+  if (pass) {
+    const certWrap = document.getElementById('certWrap');
+    certWrap.style.display = 'block';
+    document.getElementById('certName').textContent = empName;
+    document.getElementById('certScore').textContent =
+      (lang==='fr' ? 'Score : ' : 'Score: ') + pct + '% — ' +
+      (lang==='fr' ? 'RÉUSSI / PASSED' : 'PASSED / RÉUSSI');
+    const now = new Date();
+    document.getElementById('certDate').textContent =
+      now.toLocaleDateString(lang==='fr' ? 'fr-CA' : 'en-CA', {year:'numeric',month:'long',day:'numeric'});
+
+    if (lang === 'en') {
+      document.getElementById('certCourse').innerHTML =
+        'has successfully completed the initial training in<br>' +
+        '<strong>Air Cargo Security — Authorized Cargo Representative</strong><br>' +
+        '<em>Sûreté du Fret Aérien — Représentant de Fret Autorisé</em><br>' +
+        'Transport Canada Program · Programme de Transports Canada';
+      document.getElementById('printBtnText').textContent = 'Step 1 — Save / Download my certificate';
+      document.getElementById('instrText').innerHTML =
+        'After saving your certificate, send it to Manuel by:<br><br>' +
+        '📧 &nbsp;<strong style="color:white;font-size:14px">Email:</strong> ' +
+        '<a href="mailto:manny@diamondbackexpress.com?subject=ACR Training Certificate" style="color:#4A90D9;font-weight:700;font-size:14px">manny@diamondbackexpress.com</a><br><br>' +
+        '📱 &nbsp;<strong style="color:white;font-size:14px">WhatsApp:</strong> ' +
+        '<a href="https://wa.me/15145670214" target="_blank" style="color:#25D366;font-weight:700;font-size:14px">514-567-0214</a><br><br>' +
+        '<div style="background:rgba(224,107,42,0.15);border-left:4px solid #E06B2A;padding:10px 12px;border-radius:4px;font-size:12px;color:#F5A25A">' +
+        '⚠️ Without this copy, your training cannot be officially recorded in DBX files.' +
+        '</div>';
+    }
+    document.getElementById('printBtnWrap').style.display = 'block';
+  }
+}
+
+// ── PRINT / SAVE CERTIFICATE ──────────────────────────────────────────────
+function printCert() {
+  // Populate overlay with the certificate content
+  const certEl = document.getElementById('certPreview');
+  document.getElementById('certOverlayContent').innerHTML = certEl.outerHTML;
+
+  // Update text based on language
+  if (lang === 'en') {
+    document.getElementById('ovStep1Title').textContent = 'STEP 1 — Take a screenshot / Save';
+    document.getElementById('ovStep1Sub').innerHTML = 'On iPhone: Power + Volume Up at the same time<br>On Android: Power + Volume Down at the same time';
+    document.getElementById('ovStep2Title').textContent = 'STEP 2 — Send a copy to Manuel';
+    document.getElementById('ovEmailLink').href = 'mailto:manny@diamondbackexpress.com?subject=ACR Training Certificate';
+    document.getElementById('ovWarning').innerHTML = '⚠️ Without this copy, your training cannot be officially recorded in DBX files.';
+  }
+
+  // Show overlay
+  document.getElementById('certOverlay').style.display = 'flex';
+  document.getElementById('certOverlay').scrollTop = 0;
+}
+
+function closeCertOverlay() {
+  document.getElementById('certOverlay').style.display = 'none';
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+</script>
+</body>
+</html>
