@@ -14,7 +14,7 @@
     apiKey: "AIzaSyBGROpss8i4f0txMQkl3i7wt20SPrxek2A",
     authDomain: "dbx-prod.firebaseapp.com",
     projectId: "dbx-prod",
-    storageBucket: "dbx-prod.firebasestorage.app",
+    storageBucket: "dbx-prod.appspot.com",
     messagingSenderId: "402235440224",
     appId: "1:402235440224:web:663da4005ec11833bcd705"
   }, "dbx-form");
@@ -120,7 +120,7 @@
   <div class="section-header"><div class="section-letter">A</div><div class="section-title">Personal Information <span>Informations personnelles</span></div></div>
   <div class="fields">
     <div class="field-group"><label>First and Last Name <span class="req">*</span><span class="fr">Prénom et Nom de famille</span></label><input type="text" name="fullName" placeholder="John Doe" autocomplete="name" autocapitalize="words"></div>
-    <div class="field-group"><label>Date of Birth <span class="req">*</span><span class="fr">Date de naissance</span></label><input type="date" name="dob"></div>
+    <div class="field-group"><label>Date of Birth <span class="req">*</span><span class="fr">Date de naissance</span></label><div style="display:flex;gap:8px"><select name="dobMonth" style="flex:2"><option value="">Month / Mois</option><option value="01">01 — January</option><option value="02">02 — February</option><option value="03">03 — March</option><option value="04">04 — April</option><option value="05">05 — May</option><option value="06">06 — June</option><option value="07">07 — July</option><option value="08">08 — August</option><option value="09">09 — September</option><option value="10">10 — October</option><option value="11">11 — November</option><option value="12">12 — December</option></select><select name="dobDay" style="flex:1"><option value="">Day</option></select><select name="dobYear" style="flex:2"><option value="">Year</option></select></div></div>
     <div class="field-group"><label>Country of Birth <span class="req">*</span><span class="fr">Pays de naissance</span></label><input type="text" name="countryBirth" placeholder="Canada" autocapitalize="words"></div>
     <div class="field-group"><label>City of Birth <span class="req">*</span><span class="fr">Lieu de naissance — Ville</span></label><input type="text" name="cityBirth" placeholder="Montréal" autocapitalize="words"></div>
     <div class="field-group"><label>Email Address <span class="req">*</span><span class="fr">Adresse courriel</span></label><input type="email" name="email" placeholder="you@email.com" autocomplete="email" inputmode="email"></div>
@@ -268,6 +268,23 @@ async function handleFiles(key, input) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Populate Day dropdown
+  const daySelect = document.querySelector('[name="dobDay"]');
+  for (let d = 1; d <= 31; d++) {
+    const opt = document.createElement('option');
+    opt.value = String(d).padStart(2,'0');
+    opt.textContent = String(d).padStart(2,'0');
+    daySelect.appendChild(opt);
+  }
+  // Populate Year dropdown (1940 to current year)
+  const yearSelect = document.querySelector('[name="dobYear"]');
+  const currentYear = new Date().getFullYear();
+  for (let y = currentYear; y >= 1940; y--) {
+    const opt = document.createElement('option');
+    opt.value = y;
+    opt.textContent = y;
+    yearSelect.appendChild(opt);
+  }
   const jc = document.getElementById('jobSections');
   for (let n = 1; n <= 5; n++) {
     const req = n===1;
@@ -311,7 +328,7 @@ function buildPayload() {
     addresses.push({street, city:gv(`addr${i}City`), postal:gv(`addr${i}Postal`), from:gv(`addr${i}From`), to:gv(`addr${i}To`), files:uploadedFiles[`addr${i}proof`]||[]});
   }
   return {
-    fullName:gv('fullName'), dob:gv('dob'), countryBirth:gv('countryBirth'), cityBirth:gv('cityBirth'),
+    fullName:gv('fullName'), dob:(gv('dobYear') && gv('dobMonth') && gv('dobDay')) ? gv('dobYear')+'-'+gv('dobMonth')+'-'+gv('dobDay') : '—', countryBirth:gv('countryBirth'), cityBirth:gv('cityBirth'),
     email:gv('email'), phone:gv('phone'), outsideCanada:radio?radio.value:'—',
     jobs, addresses, idType:gv('idType'), idFiles:uploadedFiles['idproof']||[],
     signature:gv('signature'), signDate:gv('signDate'), dateSubmitted:new Date().toISOString().split('T')[0]
@@ -319,7 +336,7 @@ function buildPayload() {
 }
 
 async function submitForm() {
-  const required = ['fullName','dob','countryBirth','cityBirth','email','phone','job1Employer','job1Position','job1Start','addr1Street','addr1City','addr1Postal','addr1From','signature','signDate'];
+  const required = ['fullName','dobMonth','dobDay','dobYear','countryBirth','cityBirth','email','phone','job1Employer','job1Position','job1Start','addr1Street','addr1City','addr1Postal','addr1From','signature','signDate'];
   const missing = required.filter(n=>!gv(n));
   if (!document.querySelector('input[name="outsideCanada"]:checked')) missing.push('Canada question');
   if (!gv('idType')) missing.push('ID type');
@@ -339,7 +356,7 @@ async function submitForm() {
 }
 
 function updateProgress() {
-  const fields = ['fullName','dob','countryBirth','cityBirth','email','phone','job1Employer','job1Position','job1Start','addr1Street','addr1City','addr1Postal','addr1From','signature'];
+  const fields = ['fullName','dobMonth','dobDay','dobYear','countryBirth','cityBirth','email','phone','job1Employer','job1Position','job1Start','addr1Street','addr1City','addr1Postal','addr1From','signature'];
   const filled = fields.filter(n=>gv(n)).length;
   const radio = document.querySelector('input[name="outsideCanada"]:checked')?1:0;
   const idDone = (uploadedFiles['idproof']&&uploadedFiles['idproof'].length>0)?1:0;
